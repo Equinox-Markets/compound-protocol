@@ -1,44 +1,56 @@
-// SPDX-License-Identifier: BSD-3-Clause
-pragma solidity ^0.8.10;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 import "./PriceOracle.sol";
-import "./CErc20.sol";
+import "./CToken.sol";
 
 contract SimplePriceOracle is PriceOracle {
-    mapping(address => uint) prices;
-    event PricePosted(address asset, uint previousPriceMantissa, uint requestedPriceMantissa, uint newPriceMantissa);
+  mapping(address => uint) prices;
 
-    function _getUnderlyingAddress(CToken cToken) private view returns (address) {
-        address asset;
-        if (compareStrings(cToken.symbol(), "cETH")) {
-            asset = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-        } else {
-            asset = address(CErc20(address(cToken)).underlying());
-        }
-        return asset;
-    }
+  // Chainlink oracle approval mapping
+  mapping(address => bool) public approvedOracles;
 
-    function getUnderlyingPrice(CToken cToken) public override view returns (uint) {
-        return prices[_getUnderlyingAddress(cToken)];
-    }
+  event PricePosted(address asset, uint previousPriceMantissa, uint requestedPriceMantissa, uint newPriceMantissa);
 
-    function setUnderlyingPrice(CToken cToken, uint underlyingPriceMantissa) public {
-        address asset = _getUnderlyingAddress(cToken);
-        emit PricePosted(asset, prices[asset], underlyingPriceMantissa, underlyingPriceMantissa);
-        prices[asset] = underlyingPriceMantissa;
-    }
+  modifier onlyApprovedOracle() {
+    require(approvedOracles[msg.sender], "Not approved oracle");
+    _;
+  }
 
-    function setDirectPrice(address asset, uint price) public {
-        emit PricePosted(asset, prices[asset], price, price);
-        prices[asset] = price;
+  function getUnderlyingPrice(CToken cToken) public view returns (uint) {
+    address asset = _getUnderlyingAddress(cToken);
+    if (approvedOracles[msg.sender]) {
+      return prices[asset];
+    } else {
+      return 0;
     }
+  }
 
-    // v1 price oracle interface for use as backing of proxy
-    function assetPrices(address asset) external view returns (uint) {
-        return prices[asset];
-    }
+  function setUnderlyingPrice(CToken cToken, uint underlyingPriceMantissa) public onlyApprovedOracle {
+    address asset = _getUnderlyingAddress(cToken);
+    emit PricePosted(asset, prices[asset], underlyingPriceMantissa, underlyingPriceMantissa);
+    prices[asset] = underlyingPriceMantissa;
+  }
 
-    function compareStrings(string memory a, string memory b) internal pure returns (bool) {
-        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
-    }
+  // Approve Chainlink oracle
+  function approvePriceOracle(address oracle) public {
+    require(oracle != address(0), "Cannot approve zero address");
+    approvedOracles[oracle] = true;
+  }
+
+  function setChainlinkPriceOracle() public {
+    address chainlinkOracle = 0x150A58e9E6BF69ccEb1DBA5ae97C166DC8792539;
+    approvePriceOracle(chainlinkOracle);
+  }
+
+  function setDirectPrice(address asset, uint price) public {
+    emit PricePosted(asset, prices[asset], price, price);
+    prices[asset] = price;
+  }
+
+  // v1 price oracle interface for use as backing of proxy
+  function assetPrices(address asset) external view returns (uint) {
+    return prices[asset];
+  }
 }
+
