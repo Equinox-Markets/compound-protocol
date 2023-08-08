@@ -1,0 +1,193 @@
+{
+	"compiler": {
+		"version": "0.8.10+commit.fc410830"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "dripRate_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "contract EIP20Interface",
+						"name": "token_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "target_",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "drip",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dripRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dripStart",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dripped",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "target",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"internalType": "contract EIP20Interface",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "Compound",
+			"details": "This contract must be poked via the `drip()` function every so often.",
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"params": {
+						"dripRate_": "Numer of tokens per block to drip",
+						"target_": "The recipient of dripped tokens",
+						"token_": "The token to drip"
+					}
+				},
+				"drip()": {
+					"details": "Note: this will only drip up to the amount of tokens available.",
+					"returns": {
+						"_0": "The amount of tokens dripped in this call"
+					}
+				}
+			},
+			"title": "Reservoir Contract",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"constructor": {
+					"notice": "Constructs a Reservoir"
+				},
+				"drip()": {
+					"notice": "Drips the maximum amount of tokens to match the drip rate since inception"
+				},
+				"dripRate()": {
+					"notice": "Tokens per block that to drip to target (immutable)"
+				},
+				"dripStart()": {
+					"notice": "The block number when the Reservoir started (immutable)"
+				},
+				"dripped()": {
+					"notice": "Amount that has already been dripped"
+				},
+				"target()": {
+					"notice": "Target to receive dripped tokens (immutable)"
+				},
+				"token()": {
+					"notice": "Reference to token to drip (immutable)"
+				}
+			},
+			"notice": "Distributes a token to a different contract at a fixed rate.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Reservoir.sol": "Reservoir"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/EIP20Interface.sol": {
+			"keccak256": "0xf44fc7783d4a0060119f0096a122c3f305c7a03da75aa21408393d8d7a2e649b",
+			"license": "BSD-3-Clause",
+			"urls": [
+				"bzz-raw://98edcf6c8e46b8340174c4fbda657a8390d71167dfad2fef6d26b049659549db",
+				"dweb:/ipfs/QmPiqcGe1te4TBiNGuDuBDwEjnhSQWqfqC85hFkbwFVXzi"
+			]
+		},
+		"contracts/Reservoir.sol": {
+			"keccak256": "0x2afb0b840aa689479596512a23413f54c03fb8a50b33e286c7c43b025fda768a",
+			"license": "BSD-3-Clause",
+			"urls": [
+				"bzz-raw://f72e255b45e0e1ca2e21f8e9b19d956aed81244f8ceabdd6fa61a212b635c5c5",
+				"dweb:/ipfs/QmVeg2gAB1SvyfJS1WEtjxy4WpdoPj8e5ANvWeAy161qG6"
+			]
+		}
+	},
+	"version": 1
+}
